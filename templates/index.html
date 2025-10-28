@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Coffee Shop </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Caffique</h1>
+        <p>Coffee — a liquid hug for your soul.</p>
+    </header>
+
+    <section class="menu">
+        {% for item in menu %}
+        <div class="coffee-item">
+            <h2>{{ item.name }}</h2>
+            <p>₹{{ item.price }}</p>
+            <a class="btn" href="{{ url_for('add_item', item_id=loop.index0) }}">Add to Cart</a>
+        </div>
+        {% endfor %}
+    </section>
+
+    <section class="order">
+        <h2>Your Order</h2>
+        {% if order %}
+            <ul>
+                {% for item in order %}
+                    <li>{{ item.name }} - ₹{{ item.price }}</li>
+                {% endfor %}
+            </ul>
+            <p><strong>Total:</strong> ₹{{ total }}</p>
+            <a class="btn clear" href="{{ url_for('clear_order') }}">Clear</a>
+            <a class="btn checkout" href="{{ url_for('checkout') }}">Checkout</a>
+        {% else %}
+            <p>No items yet. Add some coffee!</p>
+        {% endif %}
+    </section>
+    {% if message %}
+    <div class="message">
+        <p>{{ message }}</p>
+    </div>
+{% endif %}
+
+</body>
+</html>
