@@ -24,7 +24,7 @@ menu = [
     Coffee("Davidoff Coffee", 49),
     Coffee("Kings Coffee", 59),
     Coffee("Nescafe Coffee", 59),
-    Coffee("Rage Coffee", 79)
+    Coffee("Rage Coffee", 79),
 ]
 
 order = []
@@ -32,7 +32,8 @@ order = []
 @app.route('/')
 def index():
     total = sum(item.price for item in order)
-    return render_template('index.html', menu=menu, order=order, total=total)
+    # Pass `message` explicitly, avoids KeyError if message not set
+    return render_template('index.html', menu=menu, order=order, total=total, message=request.args.get('message'))
 
 @app.route('/add/<int:item_id>')
 def add_item(item_id):
@@ -52,11 +53,12 @@ def checkout():
     total = sum(item.price for item in order)
     message = f"Order confirmed! Total: ₹{total}. Thanks for your order! ☕"
     order.clear()
-    return render_template('index.html', menu=menu, order=[], total=0, message=message)
+    # Pass the message as a query parameter for simple display on index
+    return redirect(url_for('index', message=message))
+
 @app.route("/healthz")
 def health_check():
     return "OK", 200
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
@@ -65,12 +67,5 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=port,
         debug=False,
-        use_reloader=False  # <- disables auto restart (Render safe)
+        use_reloader=False  # disables auto restart (Render safe)
     )
-
-
-
-
-
-
-
