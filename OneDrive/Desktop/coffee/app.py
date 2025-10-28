@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
+import os
 
 app = Flask(__name__)
 
 class Coffee:
-    def __init__(self, name, price):  # fixed constructor
+    def __init__(self, name, price):
         self.name = name
         self.price = price
 
+# Coffee Menu
 menu = [
     Coffee("South Indian Filter Coffee", 99),
     Coffee("Bella Kaapi", 89),
@@ -16,14 +18,13 @@ menu = [
     Coffee("Blue Tokai Coffee", 49),
     Coffee("Bhava Coffee", 59),
     Coffee("Bili Hu Coffee", 59),
-    Coffee(" Bru Coffee", 19),
+    Coffee("Bru Coffee", 19),
     Coffee("Continental Coffee", 29),
     Coffee("Country Bean Coffee", 59),
     Coffee("Davidoff Coffee", 49),
     Coffee("Kings Coffee", 59),
     Coffee("Nescafe Coffee", 59),
     Coffee("Rage Coffee", 79)
-
 ]
 
 order = []
@@ -46,23 +47,13 @@ def clear_order():
 
 @app.route('/checkout')
 def checkout():
+    if not order:
+        return redirect(url_for('index'))
     total = sum(item.price for item in order)
+    message = f"Order confirmed! Total: ₹{total}. Thanks for your order! ☕"
     order.clear()
-    return render_template('index.html', menu=menu, order=[], total=0, message=f"Order confirmed! Total: ₹{total}")
-
-import os
+    return render_template('index.html', menu=menu, order=[], total=0, message=message)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
-
-
-@app.route('/checkout')
-def checkout():
-    if not order:
-        return redirect(url_for('index'))
-
-    total = sum(item.price for item in order)
-    message = f"Order confirmed! Total: ₹{total}. Thanks for your order! ☕"
-    order.clear()  # clear after calculating total and preparing message
-    return render_template('index.html', menu=menu, order=[], total=0, message=message)
