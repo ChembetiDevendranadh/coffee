@@ -53,11 +53,17 @@ def checkout():
     message = f"Order confirmed! Total: ₹{total}. Thanks for your order! ☕"
     order.clear()
     return render_template('index.html', menu=menu, order=[], total=0, message=message)
-import os
+@app.route("/healthz")
+def health_check():
+    return "OK", 200
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Use Render’s assigned port
-    app.run(host='0.0.0.0', port=port)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    print(f"Starting server on 0.0.0.0:{port}")
+    app.run(host="0.0.0.0", port=port, debug=False)
+
+
 
 
 
